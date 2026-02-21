@@ -6,6 +6,7 @@ import ProductPage from './pages/ProductPage'
 import ProfilePage from './pages/ProfilePage'
 import CreatePage from './pages/CreatePage'
 import EditPage from './pages/EditPage'
+import { useQuery } from '@tanstack/react-query'
 
 function App() {
   return (
