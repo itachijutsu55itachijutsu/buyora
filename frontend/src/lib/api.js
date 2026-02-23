@@ -1,5 +1,4 @@
-import api from 'axios'
-import api from "./axios";
+import api from './axios'
 
 // USERS API
 export const syncUser = async (userData) => {
