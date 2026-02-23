@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage'
 import ProductPage from './pages/ProductPage'
 import ProfilePage from './pages/ProfilePage'
 import CreatePage from './pages/CreatePage'
-import EditPage from './pages/EditPage'
+import EditPage from './pages/EditProductPage'
 
 function App() {
   const { isClerkLoaded, isSignedIn } = useAuthReq();
