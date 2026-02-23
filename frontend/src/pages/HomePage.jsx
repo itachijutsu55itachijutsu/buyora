@@ -1,4 +1,4 @@
-import { useProducts} from '../hook/useProduct'
+import { useProducts} from '../hooks/useProducts'
 import { PackageIcon, SparklesIcon } from "lucide-react";
 import { Link } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
