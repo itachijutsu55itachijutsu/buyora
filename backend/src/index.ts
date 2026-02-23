@@ -16,7 +16,7 @@ app.use(clerkMiddleware())
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: env.FRONTEND_URL }));
+app.use(cors({ origin: env.FRONTEND_URL,  credentials: true}));
 
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);

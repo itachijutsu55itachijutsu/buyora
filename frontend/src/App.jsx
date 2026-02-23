@@ -1,14 +1,18 @@
 import React from 'react'
+import useAuthReq from "./hooks/useAuthReq"
 import Navbar from './components/Navbar'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import ProductPage from './pages/ProductPage'
 import ProfilePage from './pages/ProfilePage'
 import CreatePage from './pages/CreatePage'
 import EditPage from './pages/EditPage'
-import { useQuery } from '@tanstack/react-query'
 
 function App() {
+  const { isClerkLoaded, isSignedIn } = useAuthReq();
+
+  if (!isClerkLoaded) return null;
+
   return (
     <div className='min-h-screen bg-base-100'>
       <Navbar />
@@ -16,12 +20,11 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route path='/product/:id' element={<ProductPage />} />
-          <Route path='/profile' element={<ProfilePage />} />
-          <Route path='/create' element={<CreatePage />} />
-          <Route path='/edit/:id' element={<EditPage />} />
+          <Route path='/profile' element={isSignedIn ? <ProfilePage /> : <Navigate to='/' />} />
+          <Route path='/create' element={isSignedIn ? <CreatePage /> : <Navigate to='/' />} />
+          <Route path='/edit/:id' element={isSignedIn ? <EditPage /> : <Navigate to='/' />} />
         </Routes>
       </main>
-     
     </div>
   )
 }
