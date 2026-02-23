@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { SignInButton, SignUpButton, SignOutButton, UserButton, useAuth } from '@clerk/clerk-react'
-import { ShoppingBag, Plus, User } from 'lucide-react'
+import { ShoppingBag, Plus, User, PlusIcon, UserIcon } from 'lucide-react'
 import ThemeSelector from './ThemeSelector'
 
 const Navbar = () => {
