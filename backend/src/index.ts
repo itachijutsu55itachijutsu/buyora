@@ -1,37 +1,58 @@
-import express from "express"
-import {env} from "./config/env"
+import express from "express";
+import cors from "cors";
+import path from "path";
+
+import { env } from "./config/env";
 import { clerkMiddleware } from "@clerk/express";
-import cors from 'cors'
-import userRoutes from "./routes/userRoutes";
-import productRoutes from "./routes/productRoutes";
-import commentRoutes from "./routes/commentRoutes";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
 
+import userRoutes from "./routes/userRoutes";
+import productRoutes from "./routes/productRoutes";
+import commentRoutes from "./routes/commentRoutes";
+
 const app = express();
-const PORT = env.PORT
-app.use(clerkMiddleware())
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true}));
+app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+// `credentials: true` allows the frontend to send cookies to the backend so that we can authenticate the user.
+app.use(clerkMiddleware()); // auth obj will be attached to the req
+app.use(express.json()); // parses JSON request bodies.
+app.use(express.urlencoded({ extended: true })); // parses form data (like HTML forms).
 
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/comments', commentRoutes);
+app.get("/api/health", (req, res) => {
+  res.json({
+    message: "Welcome to Productify API - Powered by PostgreSQL, Drizzle ORM & Clerk Auth",
+    endpoints: {
+      users: "/api/users",
+      products: "/api/products",
+      comments: "/api/comments",
+    },
+  });
+});
 
-app.get('/', (req, res) => {
-    res.json({ message: `Server is running on port ${PORT}` })       
-})
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/comments", commentRoutes);
 
-app.listen(PORT, async () => {
-    console.log(`Server is running on port ${PORT}`)
-    console.log(`CORS origin: ${env.FRONTEND_URL}`)  // ye confirm karne ke liye
-    
-    try {
-        await db.execute(sql`SELECT 1`);
-        console.log('✅ Database connected successfully');
-    } catch (error) {
-        console.error('❌ Database connection error:', error);
-    }
-})
+if (env.NODE_ENV === "production") {
+  const __dirname = path.resolve();
+
+  // serve static files from frontend/dist
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  // handle SPA routing - send all non-API routes to index.html - react app
+  app.get("/{*any}", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  });
+}
+
+app.listen(env.PORT, async () => {
+  console.log("Server is up and running on PORT:", env.PORT);
+
+  try {
+    await db.execute(sql`SELECT 1`);
+    console.log("✅ Database connected successfully");
+  } catch (error) {
+    console.error("❌ Database connection error:", error);
+  }
+});
